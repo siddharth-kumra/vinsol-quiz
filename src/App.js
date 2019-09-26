@@ -59,6 +59,7 @@ function App() {
   const [reset, setReset] = React.useState({
     1: false
   })
+  var opsArr = []
   const handleNSubmit = (e) => {
     e.preventDefault();
     var temp1 = {};
@@ -74,6 +75,7 @@ function App() {
         operators: op
       }
     }
+    opsArr.push([])
   temp2 = {
     ...temp2,
     [i+1]:  {'+' : true,
@@ -122,7 +124,18 @@ function App() {
       ...reset,
       [e.target.id]: false
     })
+    
   }
+  var temp;
+    Object.keys(ops).forEach(o => {
+      temp=[];
+      Object.keys(ops[o]).forEach((oper) => {
+          if(ops[o][oper]){
+            temp.push(oper)
+          }
+      })
+      opsArr[o-1]=temp
+    })
   var timerChild ;
   const handleReset = (e) => {
       setReset({
@@ -136,6 +149,7 @@ const removeTimer = (timer) => {
   timerChild = timer;
 }
 
+
   return (
 
     <div>
@@ -146,10 +160,10 @@ const removeTimer = (timer) => {
                             lower_limit={quiz[i+1].lower_limit} 
                             upper_limit={quiz[i+1].upper_limit} 
                             time={quiz[i+1].time} 
-                            operators={op} removeTimer={removeTimer}/></div> : 
+                            operators={opsArr[i]} removeTimer={removeTimer}/></div> : 
                                             <div><h1>Enter Settings for Quiz {i+1}</h1>
-      Upper Limit : <input type="number" name="upper_limit" id={i+1} value={quiz[i+1].upper_limit} min={10} max={100} required onChange={handleChange} /> <br />
-      Lower Limit : <input type="number" name="lower_limit" id={i+1} value={quiz[i+1].lower_limit} min={10} max={100} required onChange={handleChange} /> <br />
+      Upper Limit : <input type="number" name="upper_limit" id={i+1} value={quiz[i+1].upper_limit} min={1} max={100} required onChange={handleChange} /> <br />
+      Lower Limit : <input type="number" name="lower_limit" id={i+1} value={quiz[i+1].lower_limit} min={1} max={100} required onChange={handleChange} /> <br />
       Number of Questions : <input type="number" name="ques" id={i+1} value={quiz[i+1].ques} min={1} max={20} required onChange={handleChange}/> <br />
       Time in (s): <input type="number" name="time" id={i+1} value={quiz[i+1].time} min={2} max={60} required onChange={handleChange}/> <br />
       Choose Operators : {op.map((o) => { return(<span key={o}><input type="checkbox" id={i+1} name={o}  required checked={ops[i+1][o]} onChange={handleOpsChange} />{o}  </span>)})}
